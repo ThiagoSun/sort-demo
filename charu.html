@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>插入排序</title>
+  <style>
+    p{
+      font-size: 16px;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body id="body">
+  <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <p style="white-space: pre">
+    function insertionSort(arr) {
+      var len = arr.length;
+      var preIndex, current;
+      for (var i = 1; i < len; i++) {
+        preIndex = i - 1;
+        current = arr[i];
+        while(preIndex >= 0 && arr[preIndex] > current) {
+          arr[preIndex+1] = arr[preIndex];
+          preIndex--;
+        }
+        arr[preIndex+1] = current;
+      }
+      return arr;
+    }
+  </p>
+  <button id="btn">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result"></p>
+  <img src="https://lc-api-gold-cdn.xitu.io/9a1264832cad9bfd4100?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" />
+  <h4>最好情况：数组已经是正序，时间复杂度是O(n)</h4>
+  <h4>最坏情况：数组是倒序，时间复杂度O(n^2)</h4>
+  <h4>空间复杂度O(1)</h4>
+</body>
+<script>
+  function insertionSort(arr) {
+    var len = arr.length;
+    var preIndex, current;
+    for (var i = 1; i < len; i++) {
+      preIndex = i - 1;
+      current = arr[i];
+      while(preIndex >= 0 && arr[preIndex] > current) {
+        console.count('内循环执行次数');
+        arr[preIndex+1] = arr[preIndex];
+        preIndex--;
+      }
+      arr[preIndex+1] = current;
+    }
+    return arr;
+  }
+  var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+  window.onload = function () {
+    document.getElementById('btn').onclick = function () {
+      var sortArr = insertionSort(arr.concat([]));
+      var tn = document.createTextNode(sortArr);
+      document.getElementById('result').appendChild(tn);
+    };
+  }
+</script>
+</html>

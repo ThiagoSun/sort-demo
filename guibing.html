@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>归并排序</title>
+  <style>
+    p{
+      font-size: 16px;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body id="body">
+  <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <p style="white-space: pre">
+    function mergeSort(arr) {
+      var len = arr.length;
+      if(len < 2) {
+        return arr;
+      }
+      var middle = Math.floor(len / 2),
+      left = arr.slice(0, middle),
+      right = arr.slice(middle);
+      return merge(mergeSort(left), mergeSort(right));
+    }
+
+    function merge(left, right) {
+      var result = [];
+      while (left.length>0 && right.length>0) {
+        if (left[0] <= right[0]) {
+          result.push(left.shift());
+        } else {
+          result.push(right.shift());
+        }
+      }
+      while (left.length) {
+        result.push(left.shift());
+      }
+      while (right.length) {
+        result.push(right.shift());
+      }
+      return result;
+    }
+  </p>
+  <button id="btn">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result"></p>
+  <img src="./img/guibingjietu.png" style="width: 811px;margin-bottom: 20px;" />
+  <img src="https://lc-api-gold-cdn.xitu.io/49b80af33ab2e77f42b7?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" style="margin-bottom: 20px;" />
+  <h4>时间复杂度：O(n log n)，不分最好和最坏情况</h4>
+  <h4>空间复杂度=临时数组(最大)长度n + 递归深度n log n = O(n)</h4>
+  <p>当递归层数越来越深时，对于JS来说，可能会造成调用栈溢出。JS目前没有提供尾递归优化的功能，虽然ES6已经有相关的提案，但是实现的浏览器并不多，nodejs也只有高版本才能支持。</p>
+  <p>因此应当尽量避免深层次的递归调用，可以对归并排序进行改造，从递归版本改造成迭代版本。</p>
+  <p>迭代版本：<a href="https://segmentfault.com/a/1190000006261074">https://segmentfault.com/a/1190000006261074</a></p>
+</body>
+<script>
+  function mergeSort(arr) {
+    var len = arr.length;
+    if(len < 2) {
+      return arr;
+    }
+    var middle = Math.floor(len / 2),
+      left = arr.slice(0, middle),
+      right = arr.slice(middle);
+    return merge(mergeSort(left), mergeSort(right));
+  }
+
+  function merge(left, right) {
+    var result = [];
+    while (left.length>0 && right.length>0) {
+      console.count('内循环执行次数');
+      if (left[0] <= right[0]) {
+        result.push(left.shift());
+      } else {
+        result.push(right.shift());
+      }
+    }
+    while (left.length) {
+      console.count('内循环执行次数');
+      result.push(left.shift());
+    }
+    while (right.length) {
+      console.count('内循环执行次数');
+      result.push(right.shift());
+    }
+    return result;
+  }
+  var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+  window.onload = function () {
+    document.getElementById('btn').onclick = function () {
+      var sortArr = mergeSort(arr.concat([]));
+      var tn = document.createTextNode(sortArr);
+      document.getElementById('result').appendChild(tn);
+    };
+  }
+</script>
+</html>

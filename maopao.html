@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>冒泡排序</title>
+  <style>
+    p{
+      font-size: 16px;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body id="body">
+  <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <p style="white-space: pre">
+  function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+      for (var j = 0; j < len - 1 - i; j++) {
+        if (arr[j] > arr[j+1]) { //相邻元素两两对比
+          var temp = arr[j+1]; //元素交换
+          arr[j+1] = arr[j];
+          arr[j] = temp;
+        }
+      }
+    }
+    return arr;
+  }
+  </p>
+  <button id="btn">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result"></p>
+  <img src="https://lc-api-gold-cdn.xitu.io/ffef8bdf5a3b0dd54859?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" />
+  <h3>改进后：</h3>
+  <p style="white-space: pre">
+    function bubbleSort2(arr) {
+      var i = arr.length-1; //初始时,最后位置保持不变　　
+      while ( i> 0) {
+        var pos= 0; //每趟开始时,无记录交换
+        for (var j= 0; j< i; j++){
+          if (arr[j]> arr[j+1]) {
+            pos= j; //记录交换的位置
+            var tmp = arr[j];
+            arr[j]=arr[j+1];
+            arr[j+1]=tmp;
+          }
+        }
+        i= pos; //为下一趟排序作准备
+      }
+      return arr;
+    }
+  </p>
+  <button id="btn2">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result2"></p>
+  <h4>最好情况：当输入数据已经是正序时，时间复杂度是O(n)</h4>
+  <h4>最坏情况：当输入数据是反序时，时间复杂度是O(n^2)</h4>
+  <h4>空间复杂度O(1)，占用的内存不随问题规模的扩大而增加</h4>
+</body>
+<script>
+  function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+      for (var j = 0; j < len - 1 - i; j++) {
+        console.count('1内循环执行次数');
+        if (arr[j] > arr[j+1]) { //相邻元素两两对比
+          var temp = arr[j+1]; //元素交换
+          arr[j+1] = arr[j];
+          arr[j] = temp;
+        }
+      }
+    }
+    return arr;
+  }
+  function bubbleSort2(arr) {
+    var i = arr.length-1; //初始时,最后位置保持不变　　
+    while ( i> 0) {
+      var pos= 0; //每趟开始时,无记录交换
+      for (var j= 0; j< i; j++){
+        console.count('2内循环执行次数');
+        if (arr[j]> arr[j+1]) {
+          pos= j; //记录交换的位置
+          var tmp = arr[j];
+          arr[j]=arr[j+1];
+          arr[j+1]=tmp;
+        }
+      }
+      i= pos; //为下一趟排序作准备
+    }
+    return arr;
+  }
+  var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+  window.onload = function () {
+    document.getElementById('btn').onclick = function () {
+      var sortArr = bubbleSort(arr.concat([]));
+      var tn = document.createTextNode(sortArr);
+      document.getElementById('result').appendChild(tn);
+    };
+    document.getElementById('btn2').onclick = function () {
+      var sortArr = bubbleSort2(arr.concat([]));
+      var tn = document.createTextNode(sortArr);
+      document.getElementById('result2').appendChild(tn);
+    };
+  }
+</script>
+</html>

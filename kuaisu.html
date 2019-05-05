@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>快速排序</title>
+  <style>
+    p{
+      font-size: 16px;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body id="body">
+  <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <p style="white-space: pre">
+    function partition(arr, left, right) {
+      var p = arr[left]; // p 是枢纽
+      var m = left; // S1 和 S2 一开始是空的
+      for (var i = left+1; i <= right; i++) { // 探索未知的区域
+        if (arr[i] < p) { // case 2
+          m++;
+          swap(arr[i], arr[m]); // C++ STL algorithm std::swap
+        } // 注意：在情况1的时候我们什么不做: a[k] >= p
+      }
+      swap(arr[left], arr[m]); // 最后一步, 用a[m]交换枢纽
+      return m; // 返回枢纽的指数, 用于快速排序（Quick Sort）
+    }
+
+    function quickSort(arr, left, right) {
+      if (left < right) {
+        var m = partition(arr, left, right); // O(N)
+        quickSort(arr, left, m-1); // 递归地将左子阵列排序
+        quickSort(arr, m+1, right); // 然后将右子阵列排序
+      }
+    }
+
+    function swap(a, b) {
+      var temp = a;
+      a = b;
+      b = temp;
+    }
+  </p>
+  <button id="btn">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result"></p>
+  <img src="https://user-gold-cdn.xitu.io/2016/11/29/0507d28260dc41249d71788fad9bc928?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" />
+  <h4>最坏情况：当划分的两个子问题规模分别为n-1个元素和0个元素时，也就是原数组已经有序的状态下，时间复杂度是O(n^2)</h4>
+  <h4>最好情况：当划分的两个子问题规模分别为n/2个元素和n/2 - 1个元素时，时间复杂度为O(n log n)</h4>
+  <h4>空间复杂度：不占用额外的变量内存空间，但是会占用额外的函数调用栈内存，即迭代深度，O(log n)</h4>
+  <p>优点：速度快，效率高，虽然最坏情况的时间复杂度达到了O(n²)，在大多数情况下都比平均时间复杂度为O(n log n) 的排序算法表现要更好且O(n log n)记号中隐含的常数因子很小，比复杂度稳定等于O(n log n)的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序。</p>
+  <p>缺点：同样存在和归并排序一样的栈溢出的可能性，在实现时要非常小心才能避免低劣的性能</p>
+  <p>关于不稳定的解释：<a href="https://www.zhihu.com/question/45929062">https://www.zhihu.com/question/45929062</a></p>
+</body>
+<script>
+  function partition(arr, left, right) {
+    var p = arr[left]; // p 是枢纽
+    var m = left; // S1 和 S2 一开始是空的
+    for (var i = left+1; i <= right; i++) { // 探索未知的区域
+      console.count('内循环执行次数');
+      if (arr[i] < p) { // case 2
+        m++;
+        swap(arr, i, m); // C++ STL algorithm std::swap
+      } // 注意：在情况1的时候我们什么不做: a[k] >= p
+    }
+    swap(arr, left, m); // 最后一步, 用a[m]交换枢纽
+    return m; // 返回枢纽的指数, 用于快速排序（Quick Sort）
+  }
+
+  function quickSort(arr, left, right) {
+    if (left < right) {
+      var m = partition(arr, left, right); // O(N)
+      quickSort(arr, left, m-1); // 递归地将左子阵列排序
+      quickSort(arr, m+1, right); // 然后将右子阵列排序
+    }
+  }
+
+  function swap(arr, a, b) {
+    var temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+  }
+  var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+  window.onload = function () {
+    document.getElementById('btn').onclick = function () {
+      var newArr = arr.concat([]);
+      quickSort(newArr, 0, newArr.length - 1);
+      var tn = document.createTextNode(newArr);
+      document.getElementById('result').appendChild(tn);
+    };
+  }
+</script>
+</html>

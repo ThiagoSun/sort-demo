@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>选择排序</title>
+  <style>
+    p{
+      font-size: 16px;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body id="body">
+  <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <p style="white-space: pre">
+    function selectionSort(arr) {
+      var len = arr.length;
+      var minIndex, temp;
+      for (var i = 0; i < len - 1; i++) {
+        minIndex = i;
+        for (var j = i + 1; j < len; j++) {
+          if (arr[j] < arr[minIndex]) {     //寻找最小的数
+            minIndex = j;                 //将最小数的索引保存
+          }
+        }
+        temp = arr[i];
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+      }
+      return arr;
+    }
+  </p>
+  <button id="btn">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result"></p>
+  <img src="https://lc-api-gold-cdn.xitu.io/9c3e16e6e5d0a5ac7721?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" />
+  <h4>在时间复杂度上表现稳定，都是O(n^2)，不存在最好情况和最坏情况</h4>
+  <h4>空间复杂度O(1)</h4>
+</body>
+<script>
+  function selectionSort(arr) {
+    var len = arr.length;
+    var minIndex, temp;
+    for (var i = 0; i < len - 1; i++) {
+      minIndex = i;
+      for (var j = i + 1; j < len; j++) {
+        console.count('内循环执行次数');
+        if (arr[j] < arr[minIndex]) {     //寻找最小的数
+          minIndex = j;                 //将最小数的索引保存
+        }
+      }
+      temp = arr[i];
+      arr[i] = arr[minIndex];
+      arr[minIndex] = temp;
+    }
+    return arr;
+  }
+  var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+  window.onload = function () {
+    document.getElementById('btn').onclick = function () {
+      var sortArr = selectionSort(arr.concat([]));
+      var tn = document.createTextNode(sortArr);
+      document.getElementById('result').appendChild(tn);
+    };
+  }
+</script>
+</html>

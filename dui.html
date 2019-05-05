@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>堆排序</title>
+  <style>
+    p{
+      font-size: 16px;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body id="body">
+  <h3>一、堆的预备知识：</h3>
+  <ul>
+    <li>堆是一个完全二叉树。</li>
+    <li>完全二叉树： 二叉树除开最后一层，其他层结点数都达到最大，最后一层的所有结点都集中在左边（左边结点排列满的情况下，右边才能缺失结点）。</li>
+    <li>大顶堆：根结点为最大值，每个结点的值大于或等于其孩子结点的值。</li>
+    <li>小顶堆：根结点为最小值，每个结点的值小于或等于其孩子结点的值。</li>
+    <li>堆的存储： 堆由数组来实现，相当于对二叉树做层序遍历。如下图：</li>
+  </ul>
+  <p>
+    <img src="./img/dui1.png" />
+  </p>
+  <p>
+    <img src="./img/dui2.png" />
+  </p>
+  <p>按照这种规律，数组中的第<b>i</b>个元素，在二叉树中对应的两个子节点的下标分别为<b>2i+1</b>和<b>2i+2</b></p>
+  <h3>二、堆排序算法</h3>
+  <p>
+    <img src="./img/dui3.png" />
+  </p>
+  <p>对如上二叉树做升序排序，总共分为三步：</p>
+  <h4>步骤1：</h4>
+  <p>
+    初始化大顶堆：首先选取最后一个非叶子结点(只需要调整父节点和子节点之间的大小关系，子结点之间的大小关系无需调整)，
+    下标为：i = Math.floor(arr.length/2 - 1) = 1，也就是数字4，如图中虚线框，找到三个数字的最大值，与父节点交换。
+  </p>
+  <p>
+    <img src="./img/dui4.png" />
+  </p>
+  <p>
+    然后，下标 i 依次减1，找到父子结点中的最大值，做交换（即从第一个非叶子结点开始，从右至左，从下至上遍历所有非叶子节点）。
+  </p>
+  <p>
+    <img src="./img/dui5.png" />
+  </p>
+  <p>
+    这一步中数字6、1交换后，数字[1,5,4]组成的堆顺序不对，需要执行一步调整。因此需要注意，每一次对一个非叶子结点做调整后，都要观察是否会影响子堆顺序！
+  </p>
+  <p>
+    <img src="./img/dui6.png" />
+  </p>
+  <p>此时根节点为最大值，将其与最后一个节点做交换（即交换数组第一个和最后一个）</p>
+
+  <h4>步骤2：</h4>
+  <p>
+    除开当前最后一个结点6(即最大值)，将其余结点[4,5,3,1]组成新堆转化为大顶堆，并交换根节点和最后一个节点
+    (注意观察，此时根节点以外的其他结点，都满足大顶堆的特征，所以可以从根节点4开始调整，即找到4应该处于的位置即可)。
+  </p>
+
+  <h4>步骤3：</h4>
+  <p>重复步骤2，直到堆中元素个数为1（或其对应数组的长度为1），排序完成。</p>
+
+  <h3>三、代码执行</h3>
+  <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <button id="btn">排序</button>
+  <br />
+  <p>排序结果：</p>
+  <p id="result"></p>
+
+  <h3>四、复杂度分析</h3>
+  <p>时间复杂度：shiftDown函数的内循环，最坏情况下复杂度是log n；heapSort函数的复杂度是n；按照最坏情况来算，整体的复杂度是O(n log n)</p>
+  <p>
+    空间复杂度：声明的变量空间不随问题规模的增大而增大；swap和shiftDown两个函数，里面其实都可以放到主函数中而不必单独写成函数，这样做纯粹是方便理解，
+    因此也不占用额外的调用栈空间。空间复杂度为O(1)
+  </p>
+</body>
+<script>
+  // 交换两个节点
+  function swap(A, i, j) {
+    let temp = A[i];
+    A[i] = A[j];
+    A[j] = temp;
+  }
+
+  // 将 i 结点以下的堆整理为大顶堆，注意这一步实现的基础实际上是：
+  // 假设 结点 i 以下的子堆已经是一个大顶堆，shiftDown函数实现的
+  // 功能是实际上是：找到 结点 i 在包括结点 i 的堆中的正确位置。后面
+  // 将写一个 for 循环，从第一个非叶子结点开始，对每一个非叶子结点
+  // 都执行 shiftDown操作，所以就满足了结点 i 以下的子堆已经是一大
+  //顶堆
+  function shiftDown(A, i, length) {
+    let temp = A[i]; // 当前父节点
+    // j<length 的目的是对结点 i 以下的结点全部做顺序调整
+    for(let j = 2*i+1; j<length; j = 2*j+1) {
+      console.count('内循环执行次数');
+      temp = A[i];  // 将 A[i] 取出，整个过程相当于找到 A[i] 应处于的位置
+      if(j+1 < length && A[j] < A[j+1]) {
+        j++;   // 找到两个孩子中较大的一个，再与父节点比较
+      }
+      if(temp < A[j]) {
+        swap(A, i, j) // 如果父节点小于子节点:交换；否则跳出
+        i = j;  // 交换后，temp 的下标变为 j
+      } else {
+        break;
+      }
+    }
+  }
+
+  // 堆排序
+  function heapSort(A) {
+    // 初始化大顶堆，从第一个非叶子结点开始
+    for(let i = Math.floor(A.length/2-1); i>=0; i--) {
+      console.count('shiftDown执行次数')
+      shiftDown(A, i, A.length);
+    }
+    // 排序，每一次for循环找出一个当前最大值，数组长度减一
+    for(let i = Math.floor(A.length-1); i>0; i--) {
+      console.count('shiftDown执行次数')
+      swap(A, 0, i); // 根节点与最后一个节点交换
+      shiftDown(A, 0, i); // 从根节点开始调整，并且最后一个结点已经为当
+      // 前最大值，不需要再参与比较，所以第三个参数
+      // 为 i，即比较到最后一个结点前一个即可
+    }
+  }
+
+  var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
+  window.onload = function () {
+    document.getElementById('btn').onclick = function () {
+      var newArr = arr.concat([]);
+      heapSort(newArr);
+      var tn = document.createTextNode(newArr);
+      document.getElementById('result').appendChild(tn);
+    };
+  }
+</script>
+</html>
