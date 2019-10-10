@@ -12,15 +12,16 @@
 </head>
 <body id="body">
   <p>原始数组：[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48]</p>
+  <h3>递归版本：</h3>
   <p style="white-space: pre">
     function partition(arr, left, right) {
       var p = arr[left]; // p 是枢纽
       var m = left; // S1 和 S2 一开始是空的
       for (var i = left+1; i <= right; i++) { // 探索未知的区域
-        if (arr[i] < p) { // case 2
+        if (arr[i] < p) {
           m++;
-          swap(arr[i], arr[m]); // C++ STL algorithm std::swap
-        } // 注意：在情况1的时候我们什么不做: a[k] >= p
+          swap(arr[i], arr[m]);
+        } // 注意：在a[k] >= p的时候我们什么不做
       }
       swap(arr[left], arr[m]); // 最后一步, 用a[m]交换枢纽
       return m; // 返回枢纽的指数, 用于快速排序（Quick Sort）
@@ -40,14 +41,42 @@
       b = temp;
     }
   </p>
-  <button id="btn">排序</button>
+  <h3>非递归版本：</h3>
+  <p style="white-space: pre">
+    function quickSort2(num, left, right) {
+      var list = [[left, right]]; // 将[left,right]存入数组中，类似于递归入栈
+      while (list.length > 0) { // 若list不为空，循环弹出list最后一个数组进行快排
+        var now = list.pop(); // 弹出list末尾。(也可用list.shift()取出list第一个数组，但在数据量较大时，这种方式效率较低)
+        if (now[0] >= now[1]) { // 若左右指针相遇，待排序数组长度小宇1，则无需进行快排(注意不能写成now[0]==now[1]，这里now[0]是有可能大于now[1]的
+          continue;
+        }
+        var i = now[0], j = now[1], flag = now[0]; // 以下与递归方法相同，请参考上面的递归详解
+        while (i < j) {
+          while (num[j] >= num[flag] && j > flag) j--;
+          if (i >= j) {
+            break;
+          }
+          while (num[i] <= num[flag] && i < j) i++;
+          let temp = num[flag];
+          num[flag] = num[j];
+          num[j] = num[i];
+          num[i] = temp;
+          flag = i;
+        }
+        list.push([now[0], flag - 1]); // 将flag左边数组作为待排序数组，只需将左右指针放入list即可。
+        list.push([flag + 1, now[1]]); // 将flag右边数组作为待排序数组，只需将左右指针放入list即可。
+      }
+    }
+  </p>
+  <button id="btn">递归方式</button>
+  <button id="btn2">非递归方式</button>
   <br />
   <p>排序结果：</p>
   <p id="result"></p>
   <img src="https://user-gold-cdn.xitu.io/2016/11/29/0507d28260dc41249d71788fad9bc928?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" />
   <h4>最坏情况：当划分的两个子问题规模分别为n-1个元素和0个元素时，也就是原数组已经有序的状态下，时间复杂度是O(n^2)</h4>
   <h4>最好情况：当划分的两个子问题规模分别为n/2个元素和n/2 - 1个元素时，时间复杂度为O(n log n)</h4>
-  <h4>空间复杂度：不占用额外的变量内存空间，但是会占用额外的函数调用栈内存，即迭代深度，O(log n)</h4>
+  <h4>空间复杂度：递归方式，不占用额外的变量内存空间，但是会占用额外的函数调用栈内存，即迭代深度，O(log n)；非递归方式，使用辅助数组的空间复杂度O(log n)</h4>
   <p>优点：速度快，效率高，虽然最坏情况的时间复杂度达到了O(n²)，在大多数情况下都比平均时间复杂度为O(n log n) 的排序算法表现要更好且O(n log n)记号中隐含的常数因子很小，比复杂度稳定等于O(n log n)的归并排序要小很多。所以，对绝大多数顺序性较弱的随机数列而言，快速排序总是优于归并排序。</p>
   <p>缺点：同样存在和归并排序一样的栈溢出的可能性，在实现时要非常小心才能避免低劣的性能</p>
   <p>关于不稳定的解释：<a href="https://www.zhihu.com/question/45929062">https://www.zhihu.com/question/45929062</a></p>
@@ -58,10 +87,10 @@
     var m = left; // S1 和 S2 一开始是空的
     for (var i = left+1; i <= right; i++) { // 探索未知的区域
       console.count('内循环执行次数');
-      if (arr[i] < p) { // case 2
+      if (arr[i] < p) {
         m++;
-        swap(arr, i, m); // C++ STL algorithm std::swap
-      } // 注意：在情况1的时候我们什么不做: a[k] >= p
+        swap(arr, i, m);
+      } // 注意：在a[k] >= p的时候我们什么不做
     }
     swap(arr, left, m); // 最后一步, 用a[m]交换枢纽
     return m; // 返回枢纽的指数, 用于快速排序（Quick Sort）
@@ -80,11 +109,48 @@
     arr[a] = arr[b];
     arr[b] = temp;
   }
+
+  function quickSort2(num, left, right) {
+    var list = [[left, right]]; // 将[left,right]存入数组中，类似于递归入栈
+    while (list.length > 0) { // 若list不为空，循环弹出list最后一个数组进行快排
+      var now = list.pop(); // 弹出list末尾。(也可用list.shift()取出list第一个数组，但在数据量较大时，这种方式效率较低)
+      if (now[0] >= now[1]) { // 若左右指针相遇，待排序数组长度小宇1，则无需进行快排(注意不能写成now[0]==now[1]，这里now[0]是有可能大于now[1]的
+        continue;
+      }
+      var i = now[0], j = now[1], flag = now[0]; // 以下与递归方法相同，请参考上面的递归详解
+      while (i < j) {
+        while (num[j] >= num[flag] && j > flag) {
+          j--;
+          console.count('内循环执行次数');
+        }
+        if (i >= j) {
+          break;
+        }
+        while (num[i] <= num[flag] && i < j) {
+          console.count('内循环执行次数');
+          i++;
+        }
+        let temp = num[flag];
+        num[flag] = num[j];
+        num[j] = num[i];
+        num[i] = temp;
+        flag = i;
+      }
+      list.push([now[0], flag - 1]); // 将flag左边数组作为待排序数组，只需将左右指针放入list即可。
+      list.push([flag + 1, now[1]]); // 将flag右边数组作为待排序数组，只需将左右指针放入list即可。
+    }
+  }
   var arr=[3,44,38,5,47,15,36,26,27,2,46,4,19,50,48];
   window.onload = function () {
     document.getElementById('btn').onclick = function () {
       var newArr = arr.concat([]);
       quickSort(newArr, 0, newArr.length - 1);
+      var tn = document.createTextNode(newArr);
+      document.getElementById('result').appendChild(tn);
+    };
+    document.getElementById('btn2').onclick = function () {
+      var newArr = arr.concat([]);
+      quickSort2(newArr, 0, newArr.length - 1);
       var tn = document.createTextNode(newArr);
       document.getElementById('result').appendChild(tn);
     };
